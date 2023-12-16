@@ -1,0 +1,36 @@
+form[data-fst="form"] {
+  display: table;
+}
+form[data-fst="form"] div[data-fst="form-row"] {
+  display: table-row;
+  margin: 0.5em 0;
+}
+form[data-fst="form"] div[data-fst="form-row"]:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+form[data-fst="form"] div[data-fst="form-label"] {
+  display: table-cell;
+  padding: 0.5em 0;
+  font-style: italic;
+  text-align: right;
+  vertical-align: top;
+}
+form[data-fst="form"] div[data-fst="form-controls"] {
+  display: table-cell;
+  padding: 0.5em 0 0.25em 1ex;
+  vertical-align: top;
+}
+form[data-fst="form"] div[data-fst="form-controls-row"] > * {
+  display: inline-block;
+  margin-left: 1ex;
+}
+form[data-fst="form"] div[data-fst="form-controls-row"] > *:first-child {
+  margin-left: 0;
+}
+form[data-fst="form"] div[data-fst="form-error"] {
+  font-style: italic;
+  font-size: 90%;
+  color: red;
+}

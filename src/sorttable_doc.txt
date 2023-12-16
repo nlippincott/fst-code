@@ -1,0 +1,353 @@
+From: https://kryogenix.org/code/browser/sorttable/
+
+Now, how to use it. To make a table of your choice sortable, there are three steps:
+
+    Download the Javascript library
+    Include the Javascript library, by putting a link to it in the HEAD of your page, like so:
+
+    <script src="sorttable.js"></script>
+
+    Mark your table as a sortable one by giving it a class of "sortable":
+
+    <table class="sortable">
+
+    Note that the library's JavaScript file is called sorttable (two Ts), but the class you add to the table is sortable (one T).
+
+And that's all you need. Your table will now have column sorting available by clicking the headers. For niceness, you might want to add the following styles to your stylesheet, or make up some of your own based on this:
+
+
+/* Sortable tables */
+table.sortable thead {
+    background-color:#eee;
+    color:#666666;
+    font-weight: bold;
+    cursor: default;
+}
+
+This is version 2 of sorttable, released April 2007 and tweaked continually since. If you're using the old version, you may find it useful to update; v2 has numerous new features and should be completely backwards compatible.
+Advanced usage
+
+You probably don't need the bits here. Sorttable is designed to require no configuration, no fiddling around. Just take it and use it. If you need it to do more than it does by default, then come back here and read this part.
+
+    How do I sort a table that I added with Ajax?
+    How do I make my "totals" row stay at the bottom of my table?
+    Can I make a sortable table show symbols before it's sorted, so my viewers know that it's sortable?
+    How do I sort some data in a format that sorttable doesn't understand?
+    What do I do if sorttable isn't sorting my data the way I'd expect it to?
+    How do I make sorttable handle dates in the format I put them in?
+    Can sorttable sort IP addresses?
+    Can sorttable do a stable sort?
+    How do I make sorttable sort non-English text in the correct order?
+    How can I tell a sortable table to sort from my code, rather than from a user click?
+    How do I use my own custom icons for sorting?
+    How do I make some columns not be sortable?
+    Can sorttable sort a table as soon as the page loads, without requiring the user to click?
+    How do I make sorttable sort columns in descending order first rather than ascending order?
+    How do I make sorttable sort text case-insensitively (i.e., so lower-case and upper-case letters sort together)?
+    How do I have a column of "row numbers" on the left of my table which sorttable doesn't sort?
+    How do I have my table striped (alternating rows in different colours) and keep that striping after sorting?
+    Can I have the body of the table be scrollable?
+    Can I sort tables on a page I didn't write?
+    What's new in version 2 of sorttable?
+    Can I use sorttable in a commercial product? On a commercial website? What licencing terms is it available under?
+    I love sorttable so much that I want to donate some money to you even though I don't have to. Can I?
+    I've found a problem in sorttable. How can I tell you about it?
+    But I need my problem with sorttable to be fixed! Can I pay you to fix it?
+
+Sorting a table added after page load
+
+Once you've added a new table to the page at runtime (for example, by doing an Ajax request to get the content, or by dynamically creating it with JavaScript), get a reference to it (possibly with var newTableObject = document.getElementById(idOfTheTableIJustAdded) or similar), then do this:
+
+sorttable.makeSortable(newTableObject);
+
+Totals rows
+
+If you have a "totals" row at the bottom of your table that you want to stay at the bottom of your table (and not get sorted), then add it to a <tfoot> section in your table (which is what you should be doing anyway, according to the HTML spec). So, your table should look like this:
+
+<table class="sortable">
+<thead>
+  <tr><th>Person</th><th>Monthly pay</th></tr>
+</thead>
+<tbody>
+  <tr><td>Jan Molby</td><td>£12,000</td></tr>
+  <tr><td>Steve Nicol</td><td>£8,500</td></tr>
+  <tr><td>Steve McMahon</td><td>£9,200</td></tr>
+  <tr><td>John Barnes</td><td>£15,300</td></tr>
+</tbody>
+<tfoot>
+  <tr><td>TOTAL</td><td>£45,000</td></tr>
+</tfoot>
+</table>
+
+Note how sorting the table leaves the TOTAL row at the bottom.
+Person	Monthly pay
+Jan Molby	£12,000
+Steve Nicol	£8,500
+Steve McMahon	£9,200
+John Barnes	£15,300
+TOTAL	£45,000
+Show "sort icons" before the table is sorted
+
+It's possible to show a symbol in a sortable table's column headers to indicate that the table is sortable. Something like this:
+Series	Marks out of ten
+Original series	7
+Next Generation	9
+DS9	5
+Voyager	2
+Enterprise	3
+
+To do this, add a bit of CSS to your stylesheet:
+
+table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after { 
+    content: " \25B4\25BE" 
+}
+
+Note that this requires support for CSS generated content, which needs a modern-ish browser. You can, of course, change the generated content to whatever you want.
+Using custom sort keys
+
+You may have some data which does go in an order but isn't identified by sorttable. The way to fix this problem is to use custom sort keys. Take, for example, a column of spelled out numbers. Ordinarily, sorttable wouldn't work here; it will treat the spelled-out numbers as strings, and so would sort the numbers in alphabetical order, i.e., five, four, one, three, two. To get around this, you can specify on a cell in your table a sorttable_customkey attribute, and sorttable will use the contents of that attribute instead of the text in the cell itself when sorting the table. So, for example, your table might look like this:
+
+<table class="sortable">
+<tr><th>Number (spelled)</th><th>Person</th></tr>
+<tr><td sorttable_customkey="2">two</td><td>Jan</td></tr>
+<tr><td sorttable_customkey="3">three</td><td>Bruce</td></tr>
+<tr><td sorttable_customkey="1">one</td><td>Steve</td></tr>
+</table>
+
+Note that clicking on the "Number (spelled)" column in the table below sorts it in the correct one,two,three order.
+Number (spelled)	Person
+two	Jan
+three	Bruce
+one	Steve
+
+You can fix practically any problem you have with sorttable's automatic column typing by specifying custom sort keys.
+Manually specifying a column's type
+
+Sorttable works out the type of your columns in order to work out how to sort them (numbers sort differently than letters, for example). Occasionally, it might get it wrong. If so, you can explicitly specify a type for a column, which will override sorttable's assessment. To specify a type, add a class of sorttable_columntype to the header row of that column. Available column types are numeric, alpha, ddmm, and mmdd. The latter two are for dates, but are not likely to be useful because if sorttable fails to automatically identify a date then the sort won't work anyway.
+
+So, for example, if you have a "part number" column which you want to be treated as if it were numeric, then you might do your table like this:
+
+<table class="sortable">
+<tr>
+  <th class="sorttable_numeric">Part number</th><th>Part name</th>
+</tr>
+<tr>
+  <td>111-A5</td><td>Three-eighths Gripley</td>
+</tr>
+<tr>
+  <td>31337-H4X0R</td><td>Computer system intrusion toolkit</td>
+</tr>
+</table>
+
+Remember: you probably do not need to do this. It is unlikely that you'll need to "force" sorttable to recognise a column type. You may also want to investigate using custom sortkeys, above, as a better way of achieving your goals.
+Using custom date formats
+
+One common question with sorttable is how to make it handle custom date formats. Sorttable will have a try at understanding dates in whatever format you add them in, but it sometimes needs help. The way to do this is with custom sort keys, as mentioned above. If you have table cells like this:
+
+<td>February 11th 2008, 1.19pm</td>
+
+change them by adding a custom sort key in YYYYMMDDHHMMSS format:
+
+<td sorttable_customkey="20080211131900">February 11th 2008, 1:19pm</td>
+
+The YYYYMMDDHHMMSS format for the date in the custom key will sort properly, and sorttable will use the information in the custom key rather than the information in the table cell itself.
+Sorting a column of IP addresses
+
+Another common request is for sorttable to sort IP addresses. This will likely be automatically handled in sorttable v3, but until then you can work around it by using custom sort keys. Change a cell with an IP address from <td>1.2.191.17</td> to <td sorttable_customkey="001.002.191.017">1.2.191.17</td>; that is, add a custom key of the IP address, but with each octet in the IP being three digits long, padded with zeroes if necessary. Sorttable will then sort this column correctly.
+IP address	Server name
+205.17.31.161	buffy
+192.168.0.1	xander
+75.244.151.2	giles
+4.8.16.196	willow
+Stable sorting
+
+Sorttable, by default, does an unstable sort. This means that it does not maintain the order of rows where those rows have the same key in the sorted column. Wikipedia has more on stable sorting. If this is a problem, and you need the sort to be stable, you can do it by making a tiny edit to sorttable.js. Edit the file and find the lines:
+
+/* If you want a stable sort, uncomment the following line */
+//sorttable.shaker_sort(row_array, this.sorttable_sortfunction);
+/* and comment out this one */
+row_array.sort(this.sorttable_sortfunction);
+
+and change them so the shaker_sort line is uncommented instead:
+
+sorttable.shaker_sort(row_array, this.sorttable_sortfunction);
+//row_array.sort(this.sorttable_sortfunction);
+
+The sort will now be stable. However, it will be considerably slower (the stable sorting can take eight times as long as the unstable sort), which is why it isn't enabled by default.
+Sorting non-English text
+
+Sorttable defaults to sorting English text. If you're sorting text in a different language which has a different letter order (in particular, if you're seeing that accented characters are not sorting where you'd expect them to), then you can tell sorttable to sort in the language of the page. After you include sorttable.js, add
+
+<script>sorttable.sort_alpha = function(a,b) { return a[0].localeCompare(b[0]); }</script>
+
+and sorttable will start using the sort order of the language of the browser and page to do its sorting. (This isn't done by default because localeCompare sorting is, although definitely the right thing to do, quite a lot slower than string comparisons.) If you want to force sorttable to sort in a particular language's sort order regardless of the browser, you can add a language code to the call; here we force comparisons to be Finnish:
+
+<script>sorttable.sort_alpha = function(a,b) { return a[0].localeCompare(b[0], 'fi'); }</script>
+
+Sorting a table from your code
+
+Sometimes you want to, from your own JavaScript code, tell a table to sort. This is deliberately awkward because you shouldn't be doing it, and you'll want to make sure that you have an up-to-date version of sorttable.js to do it (download it from this site), but it's doable. Call
+
+var myTH = document.getElementsByTagName("th")[0];
+sorttable.innerSortFunction.apply(myTH, []);
+
+See the example table and buttons below.
+Name	Car
+Stuart Langridge	Nissan Juke
+Jeremy Clarkson	Mercedes CLK Black
+Penelope Pitstop	The Pink Pussycat
+The Ant Hill Mob	Chug-a-Boom
+
+Using your own icons to show a column is sorted
+
+You can hide sorttable's icons and use your own with CSS, like this:
+
+table.sortable th::after, th.sorttable_sorted::after, th.sorttable_sorted_reverse::after {
+  content: " ";
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+}
+th.sorttable_sorted::after {
+  background: url(my-sorted-icon.png);
+  background-size: contain;
+}
+th.sorttable_sorted_reverse::after {
+  background: url(my-sorted-reversed-icon.png);
+  background-size: cover;
+}
+
+Name	Salary	Extension	Start date 	Start date (American)
+Bloggs, Fred	$12000.00 	1353	18/08/2003	08/18/2003
+Turvey, Kevin	$191200.00 	2342	02/05/1979	05/02/1979
+Mbogo, Arnold	$32010.12 	2755	09/08/1998	08/09/1998
+Shakespeare, Bill	$122000.00 	3211	12/11/1961	11/12/1961
+Shakespeare, Hamnet	$9000 	9005	01/01/2002	01/01/2002
+Fitz, Marvin	$3300 	5554	22/05/1995	05/22/1995
+Making some columns unsortable
+
+If you'd like some column headers to not be clickable, meaning that your users won't be able to resort the table by those columns, then add class="sorttable_nosort" to the <th> column header. Observe how the "number of legs" column here isn't sortable.
+Name	Team 	Number of legs
+Molby, Jan	Liverpool	2
+Hughes, Mark	Manchester Utd	2
+Nicol, Steve	Liverpool	2
+Ardiles, Ossie	Tottenham Hotspur	2
+Nellie the Elephant	London Zoo United	4
+Nicholas, Charlie	Arsenal	2
+Sorting the table when the page is loaded
+
+Lots of people ask, "how do I make sorttable sort the table the first time the page is loaded?" The answer is: you don't. Sorttable is about changing the HTML that is served from your server without a page refresh. When the page is first served from the server, you have to incur the wait for it to be served anyway. So, if you want the table sorted when a page is first displayed, serve the table in sorted order. Tables often come out of a database; get the data from the database in a sorted order with an ORDER BY clause in your SQL. Any solution which involves you running sorttable as soon as the page loads (i.e., without user input) is a wrong solution.
+
+(However, if you really want to, see sorting a table from your own code.)
+Sort in descending order first
+
+Making sorttable sort your columns in descending order first rather than ascending order requires editing sorttable.js. Find the line:
+
+row_array.sort(this.sorttable_sortfunction);
+
+and after it, add a new line:
+
+row_array.reverse();
+
+Sort case-insensitively
+
+Making sorttable sort your columns case-insensitively (so uppercase and lowercase letters sort together) requires editing sorttable.js. Find the lines:
+
+  sort_alpha: function(a,b) {
+    if (a[0]==b[0]) return 0;
+    if (a[0]<b[0]) return -1;
+    return 1;
+  },
+
+and change them for
+
+  sort_alpha: function(a,b) {
+    if (a[0].toLowerCase()==b[0].toLowerCase()) return 0;
+    if (a[0].toLowerCase()<b[0].toLowerCase()) return -1;
+    return 1;
+  },
+
+Adding a "left-hand-header" column
+
+A fairly common request is to have a column on the left of the table which contains a "row number" for each row (so the first row is "1", the second "2" and so on) which is not reordered when the table is sorted.
+
+This is possible without sorttable using some advanced CSS. Add to your stylesheet:
+
+table.sortable tbody {
+    counter-reset: sortabletablescope;
+}
+table.sortable thead tr::before {
+    content: "";
+    display: table-cell;
+}
+table.sortable tbody tr::before {
+    content: counter(sortabletablescope);
+    counter-increment: sortabletablescope;
+    display: table-cell;
+}
+
+and your sortable tables will now have a left-hand "row number" column in browsers which support this technique, which is basically everything these days from IE8 and onward.
+
+A simple live example (remember that the "row number" column will not show in very old browsers)
+Name	Age
+Methusaleh	969
+Elijah Snow	100
+Shirley Temple	10
+George Burns	91
+Mrs Robinson	40
+Alternately striping the table
+
+It is quite common to want to add background striping ("zebra stripes") to a table and have those stripes work even after sorting.
+
+This is possible without sorttable using some advanced CSS. Add to your stylesheet:
+
+table.sortable tbody tr:nth-child(2n) td {
+  background: #ffcccc;
+}
+table.sortable tbody tr:nth-child(2n+1) td {
+  background: #ccfffff;
+}
+
+and your sortable tables will now be zebra striped in browsers which support this technique, which is basically everything these days from IE9 and onward.
+
+A simple live example (remember that the striping will not show in very old browsers)
+Team	Colour
+Liverpool	red
+England	white
+Wolverhampton	orange
+Arsenal	red
+Tables with a scrollable body
+
+You can have a sortable table with a scrollable body, although it will require you to specify explicit widths for your columns. See http://jsbin.com/enotac/2 for a worked example; CSS inspiration for the scrollable body was taken from Terence Ordona.
+Company	Leader
+Kryogenix Consulting	Stuart Langridge
+Apple	Tim Cook
+Oracle	Larry Ellison
+Virgin	Richard Branson
+Louis Vuitton	Louis Vuitton
+Canonical	Mark Shuttleworth
+Google	Larry Page
+Armani	Giorgio Armani
+Ferrari	Enzo Ferrari
+Can I sort tables on a page I didn't write?
+
+You can load sorttable from a bookmarklet. A simple example, which makes all tables on the current page sortable, is make tables sortable. Drag it to your bookmarks bar and then clicking it while on a page will make all tables on that page sortable.
+Changes from sorttable v1
+
+Sorttable has changed quite a lot in this new version 2. Please read the release announcement for more details of what's changed and who is to be thanked. If for some reason you need the original version 1 of sorttable you can download it from sorttable_v1.js along with the original instructions.
+Licencing
+
+Sorttable, like all my DOM scripts, is under the X11 licence, which basically means you can do what you want with it, including using it at work, in a commercial setting or product, or in open source projects (including those that are GPL licenced). If you're not sure, or you have other questions, please contact me for details.
+Can I give you money for sorttable? I really like it
+
+You don't have to. I believe in Free Software; writing this and seeing people use it is its own reward. Of course, if you're determined to give me money then I'm not going to stop you. You can send money to my PayPal account with the button below.
+I've found a problem in sorttable. How can I tell you about it?
+
+Firstly, thanks for using sorttable; sorry it's not doing quite what you want! If your question isn't answered on this page, please contact me and tell me about it, and I'll try and give you some pointers on how to fix it yourself.
+But I need my problem with sorttable fixed! Can I pay you to fix it?
+
+Yes. Sorttable gets worked on in my spare time, between paid work, which means that development might not be as fast as you like. If you really want something fixed, you can jump it up my priority list by waving money at me. Best thing to do is to contact me and we can talk about rates and so on.
+
+Stuart Langridge, November 2003, April 2007, 2016, and since
+
+kryogenix.org | other browser experiments

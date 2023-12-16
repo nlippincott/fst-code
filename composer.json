@@ -1,0 +1,12 @@
+{
+    "name": "nlippincott/fst-code",
+    "description": "Common static code for FST-based applications",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Norman Lippincott Jr",
+            "email": "nl@acm.org"
+        }
+    ],
+    "require": {}
+}

@@ -1,0 +1,32 @@
+// fst-form-1.0.less - Table-based form styles for FST-generated forms
+
+form[data-fst="form"] {
+
+	display: table;
+
+	div[data-fst="form-row"] {
+		display: table-row;
+		margin: 0.5em 0;
+		&:after { content: ""; display: table; clear: both; } // .group
+	}
+
+	div[data-fst="form-label"] {
+ 		display: table-cell; padding: 0.5em 0;
+		font-style: italic; text-align: right;
+ 		vertical-align: top;
+	}
+
+	div[data-fst="form-controls"] {
+		display: table-cell; padding: 0.5em 0 0.25em 1ex;
+		vertical-align: top;
+	}
+
+	div[data-fst="form-controls-row"] > * {
+		display: inline-block; margin-left: 1ex;
+		&:first-child { margin-left: 0; }
+	}
+
+	div[data-fst="form-error"] {
+		font-style: italic; font-size: 90%; color: red;
+	}
+}
