@@ -1,0 +1,124 @@
+@control-background: white;
+@control-background-button: #eee;
+@control-background-submit: #11274f;
+@control-color: black;
+@control-color-submit: white;
+@control-border: gray;
+@control-border-focus: black;
+@control-shadow: gray;
+@control-disabled-background: #ccc;
+@control-disabled-color: #666;
+
+input[type="text"], input[type="password"], input[type="email"],
+		input[type="number"], input[type="tel"], input[type="url"],
+		input[type="time"], input[type="date"], input[type="file"],
+		select, textarea {
+	padding: 0.75em 1em;
+	font-family: sans-serif; font-size: 1em;
+	border: 1px solid @control-border; border-radius: 4px;
+	&:focus, &:hover { border-color: @control-border-focus; }
+	&[disabled]:hover { border-color: @control-border; }
+	box-shadow: 2px 2px 2px @control-shadow;
+	background: @control-background;
+	&[disabled] {
+		color: @control-disabled-color;
+		background: @control-disabled-background;
+	}
+}
+
+// Removes the spinner from number controls
+input[type="number"]::-webkit-inner-spin-button, 
+input[type="number"]::-webkit-outer-spin-button { 
+	-webkit-appearance: none; margin: 0; 
+}
+input[type="number"] { appearance: textfield; -moz-appearance: textfield; }
+
+// Adds a caret to select controls
+select:not([multiple]) {
+	padding: 0.75em 2em 0.75em 1em;
+	appearance: none;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+//	background: @control-background;
+	background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiIHZpZXdCb3g9IjAgMCA4IDgiPgogIDxwYXRoIGQ9Ik0wIDBsNCA0IDQtNGgtOHoiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAgMikiIC8+Cjwvc3ZnPg==");
+	background-position: right 8px center;
+	background-repeat: no-repeat;
+	background-size: 16px;
+}
+
+// Custom checkbox styles assume that there is a sibling element following
+//	the input element. FST Framework 5.3 generates a label element for the
+//	checkbox in this position.
+input[type="checkbox"] { display: inline-block; height: 0; width: 0; overflow: hidden; opacity: 0; }
+input[type="checkbox"] + *::before {
+	content: ' ';
+	display: inline-block;
+	text-align: center; vertical-align: middle;
+	width: 1em; height: 1em; padding: 0.25em;
+	border: 1px solid @control-border; border-radius: 4px;
+	margin-right: 0.25em;
+	box-shadow: 2px 2px 2px @control-shadow;
+}
+//input[type="checkbox"] + *:active::before,
+//input[type="checkbox"] + *:hover::before {
+//	border-color: @control-border-focus;
+//}
+input[type="checkbox"]:checked + *::before {
+	background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiIHZpZXdCb3g9IjAgMCA4IDgiPgogIDxwYXRoIGQ9Ik02LjQxIDBsLS42OS43Mi0yLjc4IDIuNzgtLjgxLS43OC0uNzItLjcyLTEuNDEgMS40MS43Mi43MiAxLjUgMS41LjY5LjcyLjcyLS43MiAzLjUtMy41LjcyLS43Mi0xLjQ0LTEuNDF6IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwIDEpIiAvPgo8L3N2Zz4=");
+	background-size: 75%;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+// Custom radio styles assume that there is a sibling element following
+//	the input element. FST Framework 5.3 generates a label element for the
+//	radio in this position.
+input[type="radio"] { display: inline-block; height: 0; width: 0; overflow: hidden; opacity: 0; }
+input[type="radio"] + *::before {
+	content: ' ';
+	display: inline-block;
+	text-align: center; vertical-align: middle;
+	width: 1em; height: 1em; padding: 0.25em;
+	border: 1px solid @control-border; border-radius: 50%;
+	margin-right: 0.25em;
+	box-shadow: 2px 2px 2px @control-shadow;
+}
+//input[type="radio"] + *:active::before,
+//input[type="radio"] + *:hover::before {
+//	border-color: @control-border-focus;
+//}
+input[type="radio"]:checked + *::before {
+	background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiIHZpZXdCb3g9IjAgMCA4IDgiPgogIDxwYXRoIGQ9Ik0zIDBjLTEuNjYgMC0zIDEuMzQtMyAzczEuMzQgMyAzIDMgMy0xLjM0IDMtMy0xLjM0LTMtMy0zeiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMSAxKSIgLz4KPC9zdmc+");
+	background-size: 75%;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+input[type="checkbox"], input[type="radio"] {
+	&[disabled] + *::before {
+		background-color: @control-disabled-background;
+	}
+}
+
+// Buttons and button-sytle inputs
+button, input[type="button"], input[type="submit"], input[type="reset"] {
+	display: inline;
+	padding: 0.75em 1em;
+//	color: @control-color; background: @control-background;
+	text-align: center;
+	border: 1px solid @control-border; border-radius: 4px;
+	&:focus, &:hover { border-color: @control-border-focus; }
+	&[disabled]:hover { border-color: @control-border; }
+	background: @control-background-button;
+	box-shadow: 2px 2px 2px @control-shadow;
+	&[disabled] {
+		color: @control-disabled-color;
+		background: @control-disabled-background;
+	}
+}
+input[type="submit"] {
+	color: @control-color-submit; background: @control-background-submit;
+	// TODO: hover color on submit?
+	//&:focus, &:hover { background: lighten(@control-background-submit, 20%); }
+	&[disabled] { color: @control-disabled-color; }
+}
