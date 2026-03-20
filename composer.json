@@ -2,6 +2,11 @@
     "name": "nlippincott/fst-code",
     "description": "Common static code for FST-based applications",
     "type": "library",
+	"autoload": {
+		"files": [
+			"php/code_controller.php"
+		]
+	},
     "authors": [
         {
             "name": "Norman Lippincott Jr",
