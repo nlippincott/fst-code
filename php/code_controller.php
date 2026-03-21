@@ -12,7 +12,7 @@ class code_controller extends FST\Controller {
 			$this->notfound();
 
 		// Send the file
-		FST\Framework::serve($fname);
+		FST\Framework::send_static($fname);
 
 		exit;
 	}
