@@ -5,7 +5,7 @@ class code_controller extends FST\Controller {
 	public function init () {
 
 		// Determine file name
-		$fname = __DIR__ . '../' . $this->args();
+		$fname = __DIR__ . '/../' . $this->args();
 
 		// Check if file exists
 		if (!file_exists($fname))
